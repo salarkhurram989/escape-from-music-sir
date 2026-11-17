@@ -2,127 +2,234 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Escape from Music Sir</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Escape from Music Sir — 3D</title>
 <style>
-:root{--bg:#090d13;--panel:#111a25;--line:#26384a;--cyan:#53e4d2;--gold:#ffd166;--muted:#9fb0c0}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#17283a,#090d13 65%);color:#edf5fb;font:15px system-ui,Segoe UI,sans-serif;min-height:100vh}
-header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 20px;border-bottom:1px solid #233344;background:#0b121bcc;position:sticky;top:0;z-index:2;backdrop-filter:blur(12px)}
-h1{font-size:clamp(18px,3vw,26px);margin:0;letter-spacing:.04em}h1 span{color:var(--cyan)}.tag{color:var(--muted);font-size:12px;letter-spacing:.12em}
-main{max-width:1180px;margin:20px auto;padding:0 14px;display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:14px}
-.gamebox,.side{background:#0d151f;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 18px 60px #0006}
-canvas{display:block;width:100%;height:auto;background:#17232a;image-rendering:pixelated}
-.hud{display:flex;gap:8px;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--line);align-items:center}
-.pill{background:#172433;border:1px solid #2a4053;border-radius:99px;padding:6px 10px;font-size:12px;color:#d7e5ef}.pill b{color:var(--cyan)}
-.side{padding:16px}.side h2{font-size:15px;margin:0 0 10px;color:var(--cyan)}.side p,.side li{color:#b8c7d4;line-height:1.55;font-size:13px}.side ul{padding-left:18px}.side .objective{padding:12px;border:1px solid #31465a;border-radius:12px;background:#142130;margin:12px 0}.objective strong{color:var(--gold)}
-button{border:1px solid #3c6472;background:#15313a;color:#eafffc;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer}button:hover{background:#1d4850}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-#message{min-height:42px;color:#d5e5ed;font-size:13px;padding:10px 12px;border-top:1px solid var(--line)}
-.mobile{display:none;grid-template-columns:repeat(3,48px);gap:5px;justify-content:center;padding:10px}.mobile button{height:42px;padding:0;font-size:18px}
-footer{text-align:center;color:#75899a;font-size:11px;padding:12px}
-@media(max-width:820px){main{grid-template-columns:1fr}.side{order:2}.mobile{display:grid}header{padding:12px}}
+:root{color-scheme:dark;--bg:#080e14;--panel:#101b26;--line:#2a3c4c;--cyan:#55e6d1;--gold:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#1a2c3b,#080e14 70%);color:#edf5fb;font:14px system-ui,Segoe UI,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid #263747;background:#0a121bdc}
+h1{font-size:clamp(17px,3vw,25px);margin:0;letter-spacing:.04em}h1 span{color:var(--cyan)}.tag{font-size:11px;letter-spacing:.13em;color:#9fb1c0}
+main{max-width:1300px;margin:16px auto;padding:0 12px;display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:13px}
+.gamebox,.side{background:#0c151e;border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 15px 45px #0005}
+#view{display:block;width:100%;height:min(70vh,680px);min-height:360px;background:#9bb9bc;touch-action:none}
+.hud{display:flex;gap:7px;flex-wrap:wrap;padding:9px 11px;border-top:1px solid var(--line)}
+.pill{background:#172533;border:1px solid #30485a;border-radius:99px;padding:6px 9px;font-size:11px;color:#d8e5ec}.pill b{color:var(--cyan)}
+#message{padding:10px 12px;min-height:38px;border-top:1px solid var(--line);font-size:12px;color:#d2e1e9}
+.side{padding:15px}.side h2{font-size:14px;color:var(--cyan);margin:0 0 8px}.side p,.side li{font-size:12px;color:#bac9d4;line-height:1.5}.side ul{padding-left:17px}.objective{border:1px solid #354b5e;background:#142230;border-radius:11px;padding:10px;margin:10px 0}.objective strong{color:var(--gold)}
+button{background:#15313a;color:#eafffc;border:1px solid #3b6470;border-radius:9px;padding:9px 11px;font-weight:700;cursor:pointer}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.mobile{display:none;grid-template-columns:repeat(3,48px);gap:5px;justify-content:center;padding:9px;touch-action:none}.mobile button{height:42px;padding:0;font-size:17px;touch-action:none}
+#loading{position:absolute;inset:0;display:grid;place-items:center;background:#101c26;color:#eaf7f5;text-align:center;padding:20px}
+.viewport{position:relative}
+footer{text-align:center;color:#7f93a3;font-size:10px;padding:10px}
+@media(max-width:850px){main{grid-template-columns:1fr}.side{order:2}#view{height:62vh;min-height:320px}.mobile{display:grid}header{padding:11px}}
 </style>
 </head>
 <body>
-<header><div><div class="tag">LGS STATE LIFE • LAHORE</div><h1>ESCAPE FROM <span>MUSIC SIR</span></h1></div><div class="tag">STEALTH • SCHOOL ADVENTURE</div></header>
+<header><div><div class="tag">LGS STATE LIFE • LAHORE</div><h1>ESCAPE FROM <span>MUSIC SIR</span></h1></div><div class="tag">3D SCHOOL STEALTH GAME</div></header>
 <main>
 <section class="gamebox">
-<canvas id="game" width="900" height="590" aria-label="Top-down school escape game"></canvas>
-<div class="hud"><span class="pill">AREA: <b id="area">MUSIC ROOM</b></span><span class="pill">NOTES: <b id="notes">0 / 3</b></span><span class="pill">STATUS: <b id="status">Find the exit</b></span></div>
-<div id="message">Collect 3 music notes, avoid Music Sir's patrol, then reach the school gate.</div>
+<div class="viewport"><canvas id="view" aria-label="3D school escape game"></canvas><div id="loading">Loading the 3D school…</div></div>
+<div class="hud"><span class="pill">AREA: <b id="area">SCHOOL BUILDING</b></span><span class="pill">NOTES: <b id="notes">0 / 3</b></span><span class="pill">STATUS: <b id="status">Find the exit</b></span></div>
+<div id="message">Collect 3 music notes, avoid Music Sir, then escape through the main gate.</div>
 <div class="mobile">
- <span></span><button data-key="ArrowUp">▲</button><span></span>
- <button data-key="ArrowLeft">◀</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button>
+<span></span><button data-key="w">▲</button><span></span>
+<button data-key="a">◀</button><button data-key="s">▼</button><button data-key="d">▶</button>
 </div>
 </section>
 <aside class="side">
 <h2>YOUR MISSION</h2>
-<p>The final music period is over. Music Sir is checking the corridors. Find the missing notes and make your way out of the school.</p>
-<div class="objective"><strong>Objective</strong><p style="margin:6px 0 0">Collect all 3 glowing notes, move through the school corridor and courtyard, and reach the main gate.</p></div>
+<p>The final music period is over. Explore the school, collect the missing notes and get to the main gate without being caught.</p>
+<div class="objective"><strong>Objective</strong><p style="margin:5px 0 0">Find all 3 glowing music notes. Music Sir patrols the school and courtyard. Reach the open gate after collecting every note.</p></div>
 <h2>CONTROLS</h2>
-<ul><li><b>W A S D</b> or <b>Arrow keys</b> — move</li><li>Stay out of Music Sir's sight</li><li>Use walls and classrooms as cover</li><li>Reach the gate after collecting all notes</li></ul>
-<h2>AREAS</h2>
-<p><b>Inside:</b> Music Room, classrooms, hallway and reception.</p>
-<p><b>Outside:</b> Courtyard, sports ground, garden and main gate.</p>
-<div class="actions"><button id="restart">↻ Restart game</button><button id="sound">♪ Sound: off</button></div>
+<ul><li><b>W A S D</b> or <b>Arrow keys</b> — move</li><li>Move your mouse nowhere; the camera follows automatically</li><li>Use the on-screen pad on phones/tablets</li><li>Keep your distance from Music Sir</li></ul>
+<h2>3D CAMPUS</h2>
+<p><b>Inside:</b> Music room, classrooms, desks and corridors.</p>
+<p><b>Outside:</b> Courtyard, sports ground, garden, trees and main gate.</p>
+<div class="actions"><button id="restart">↻ Restart</button><button id="quality">Quality: Low</button></div>
 </aside>
 </main>
-<footer>Original browser game • Inspired by a school-campus setting • Fictional gameplay</footer>
-<script>
-(()=>{
-const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
-const W=900,H=590,keys={};let player,teacher,notes,won,lost,area,sound=false,toast='Collect all 3 notes and escape!';
-const walls=[
-{x:0,y:0,w:900,h:22},{x:0,y:568,w:900,h:22},{x:0,y:0,w:22,h:590},{x:878,y:0,w:22,h:590},
-// interior partitions and furniture
-{x:22,y:180,w:245,h:18},{x:340,y:180,w:250,h:18},{x:670,y:180,w:208,h:18},
-{x:265,y:22,w:18,h:158},{x:590,y:22,w:18,h:158},
-{x:95,y:260,w:150,h:24},{x:350,y:255,w:185,h:22},{x:690,y:255,w:120,h:24},
-{x:22,y:390,w:190,h:18},{x:310,y:390,w:210,h:18},{x:650,y:390,w:228,h:18},
-{x:212,y:390,w:18,h:120},{x:520,y:390,w:18,h:120}
-];
-function reset(){player={x:105,y:90,r:12,speed:2.65};teacher={x:720,y:105,r:15,dir:1,t:0};notes=[{x:420,y:105,got:false},{x:145,y:325,got:false},{x:760,y:485,got:false}];won=false;lost=false;area='MUSIC ROOM';toast='Find the 3 glowing music notes.';updateHud()}
-function updateHud(){document.getElementById('notes').textContent=notes.filter(n=>n.got).length+' / 3';document.getElementById('area').textContent=area;document.getElementById('status').textContent=won?'ESCAPED!':lost?'CAUGHT':'Find the exit';document.getElementById('message').textContent=toast}
-function rectHit(x,y,r,b){return x+r>b.x&&x-r<b.x+b.w&&y+r>b.y&&y-r<b.y+b.h}
-function move(o,dx,dy){let nx=o.x+dx,ny=o.y+dy;if(nx>o.r&&nx<W-o.r&&!walls.some(b=>rectHit(nx,o.y,o.r,b)))o.x=nx;if(ny>o.r&&ny<H-o.r&&!walls.some(b=>rectHit(o.x,ny,o.r,b)))o.y=ny}
-function drawBuilding(){ctx.fillStyle='#263b3b';ctx.fillRect(22,22,856,546);
-ctx.fillStyle='#344a4c';ctx.fillRect(22,22,856,165);
-ctx.fillStyle='#30464a';ctx.fillRect(22,205,856,363);
-ctx.fillStyle='#52635b';ctx.fillRect(22,410,856,158);
-ctx.fillStyle='#1e343a';ctx.fillRect(22,22,856,165);
-ctx.fillStyle='#b9c9c2';ctx.font='bold 14px system-ui';ctx.fillText('MUSIC ROOM',42,48);ctx.fillText('CLASSROOMS',320,48);ctx.fillText('RECEPTION',690,48);
-ctx.fillStyle='#47615d';ctx.fillRect(22,205,856,363);
-ctx.fillStyle='#79907b';ctx.fillRect(38,425,824,125);
-ctx.fillStyle='#263f39';ctx.fillRect(42,440,180,85);ctx.fillRect(260,440,180,85);ctx.fillRect(480,440,180,85);
-ctx.fillStyle='#d7e3d6';ctx.font='bold 14px system-ui';ctx.fillText('COURTYARD',55,230);ctx.fillText('SPORTS GROUND',350,230);ctx.fillText('GARDEN',710,230);
-ctx.fillStyle='#8e9b9a';ctx.fillRect(805,22,73,546);ctx.fillStyle='#d7d7c6';ctx.fillRect(842,260,36,95);ctx.fillStyle='#ffd166';ctx.font='bold 11px system-ui';ctx.fillText('GATE',844,250);
-ctx.fillStyle='#d1bda0';ctx.fillRect(45,75,150,65);ctx.fillRect(365,75,130,65);ctx.fillRect(700,75,125,65);
-ctx.fillStyle='#52636c';ctx.fillRect(55,84,130,48);ctx.fillRect(375,84,110,48);ctx.fillRect(710,84,105,48);
-ctx.fillStyle='#dbe7e9';ctx.font='12px system-ui';ctx.fillText('Piano',95,112);ctx.fillText('Desks',410,112);ctx.fillText('Office',740,112);
+<footer>Lightweight low-poly 3D browser game • Three.js • Game-inspired campus layout</footer>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+const canvas=document.getElementById('view');
+const loading=document.getElementById('loading');
+const areaEl=document.getElementById('area'),notesEl=document.getElementById('notes'),statusEl=document.getElementById('status'),messageEl=document.getElementById('message');
+const keys=Object.create(null);
+let scene,camera,renderer,clock,player,teacher,notes=[],won=false,lost=false,quality='low',toast='Find the 3 glowing music notes.',teacherTime=0;
+const colliders=[];
+const mats={};
+const mat=(name,color,roughness=1)=>mats[name]||(mats[name]=new THREE.MeshStandardMaterial({color,roughness}));
+const boxGeo=new THREE.BoxGeometry(1,1,1);
+function block(parent,x,y,z,w,h,d,material,collide=false){
+ const mesh=new THREE.Mesh(boxGeo,material);mesh.position.set(x,y+h/2,z);mesh.scale.set(w,h,d);mesh.castShadow=false;mesh.receiveShadow=false;parent.add(mesh);
+ if(collide)colliders.push({x1:x-w/2,x2:x+w/2,z1:z-d/2,z2:z+d/2});
+ return mesh;
 }
-function drawPerson(x,y,style){
-const s=style.scale||1;
-ctx.save();ctx.translate(x,y);ctx.scale(s,s);
-// Trousers, shoes, shirt and arms
-ctx.fillStyle=style.pants;ctx.fillRect(-9,5,7,13);ctx.fillRect(2,5,7,13);
-ctx.fillStyle='#17191d';ctx.fillRect(-10,16,8,4);ctx.fillRect(2,16,8,4);
-ctx.fillStyle=style.shirt;ctx.beginPath();ctx.roundRect(-12,-7,24,17,5);ctx.fill();
-ctx.fillStyle=style.skin;ctx.fillRect(-15,-5,4,13);ctx.fillRect(11,-5,4,13);
-ctx.fillRect(-3,-11,6,5);ctx.beginPath();ctx.arc(0,-16,8,0,Math.PI*2);ctx.fill();
-// Hair and simple facial features
-ctx.fillStyle='#171514';ctx.beginPath();ctx.arc(0,-19,7,Math.PI,Math.PI*2);ctx.fill();
-ctx.fillRect(-7,-19,3,5);ctx.fillRect(4,-19,3,5);
-ctx.fillStyle='#211713';ctx.fillRect(-3,-16,2,1.5);ctx.fillRect(2,-16,2,1.5);
-ctx.strokeStyle='#281915';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-2,-12);ctx.lineTo(2,-12);ctx.stroke();
-// Uniform tie or shirt buttons
-if(style.tie){ctx.fillStyle='#263d68';ctx.beginPath();ctx.moveTo(-2,-6);ctx.lineTo(2,-6);ctx.lineTo(3,3);ctx.lineTo(0,6);ctx.lineTo(-3,3);ctx.closePath();ctx.fill()}
-if(style.buttons){ctx.fillStyle='#c7cbd0';for(let by=-3;by<=5;by+=4){ctx.beginPath();ctx.arc(0,by,0.8,0,Math.PI*2);ctx.fill()}}
-ctx.restore();
+function cylinder(parent,x,y,z,rt,rb,h,material,segments=8){
+ const mesh=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,segments),material);mesh.position.set(x,y+h/2,z);parent.add(mesh);return mesh;
 }
-function draw(){ctx.clearRect(0,0,W,H);drawBuilding();
-walls.forEach((b,i)=>{ctx.fillStyle=i<4?'#101b20':'#8b9991';ctx.fillRect(b.x,b.y,b.w,b.h);ctx.strokeStyle='#c5d1c7';ctx.globalAlpha=.2;ctx.strokeRect(b.x,b.y,b.w,b.h);ctx.globalAlpha=1});
-notes.forEach(n=>{if(n.got)return;ctx.save();ctx.shadowColor='#ffe36e';ctx.shadowBlur=18;ctx.fillStyle='#ffe36e';ctx.beginPath();ctx.arc(n.x,n.y,9,0,Math.PI*2);ctx.fill();ctx.restore();ctx.fillStyle='#392b08';ctx.font='bold 12px system-ui';ctx.fillText('♪',n.x-4,n.y+4)});
-ctx.save();ctx.fillStyle='rgba(255,85,85,.09)';ctx.beginPath();ctx.moveTo(teacher.x,teacher.y);ctx.arc(teacher.x,teacher.y,145,teacher.dir>0?-.85:Math.PI-.85,teacher.dir>0?.85:Math.PI+.85);ctx.closePath();ctx.fill();ctx.restore();
-// Music Sir: larger-built adult with a dark complexion, black button-up shirt and dark trousers.
-drawPerson(teacher.x,teacher.y,{skin:'#3b241d',shirt:'#111318',pants:'#20242b',scale:1.28,buttons:true});
-ctx.fillStyle='#fff';ctx.font='bold 11px system-ui';ctx.fillText('MUSIC SIR',teacher.x-31,teacher.y-27);
-// Player: student in a neat LGS-inspired uniform (white shirt, navy trousers and tie).
-drawPerson(player.x,player.y,{skin:'#b87952',shirt:'#f2f4f2',pants:'#172d50',scale:1,tie:true});
-ctx.fillStyle='#e9f3f0';ctx.font='bold 10px system-ui';ctx.fillText('YOU',player.x-10,player.y+27);
-if(won||lost){ctx.fillStyle='#061018d9';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle=won?'#65ead8':'#ff8888';ctx.font='bold 42px system-ui';ctx.fillText(won?'YOU ESCAPED!':'MUSIC SIR CAUGHT YOU!',W/2,H/2-10);ctx.fillStyle='#fff';ctx.font='17px system-ui';ctx.fillText(won?'The school gate is open. Nice work!':'Try another route and use the walls for cover.',W/2,H/2+28);ctx.textAlign='left'}
+function makePerson(kind){
+ const group=new THREE.Group();
+ const student=kind==='student';
+ const skin=mat(student?'studentSkin':'sirSkin',student?0xb87952:0x3b241d);
+ const shirt=mat(student?'uniform':'sirShirt',student?0xf0f2ee:0x111318);
+ const pants=mat(student?'studentPants':'sirPants',student?0x172d50:0x20242b);
+ const hair=mat('hair',0x171514),shoe=mat('shoe',0x17191d),tie=mat('tie',0x263d68),button=mat('button',0xc7cbd0);
+ const torso=new THREE.Mesh(new THREE.BoxGeometry(student?0.72:1.05,student?0.85:1.0,0.42),shirt);torso.position.y=1.48;group.add(torso);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(0.29,10,8),skin);head.position.y=2.18;group.add(head);
+ const hairCap=new THREE.Mesh(new THREE.SphereGeometry(0.30,10,5,0,Math.PI*2,0,Math.PI/2),hair);hairCap.position.y=2.29;group.add(hairCap);
+ for(const side of [-1,1]){
+  const leg=new THREE.Mesh(new THREE.BoxGeometry(0.27,0.82,0.32),pants);leg.position.set(side*0.2,0.49,0);group.add(leg);
+  const foot=new THREE.Mesh(new THREE.BoxGeometry(0.30,0.16,0.48),shoe);foot.position.set(side*0.2,0.12,-0.07);group.add(foot);
+  const arm=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.78,0.25),student?shirt:sirShirtMat);arm.position.set(side*(student?0.49:0.68),1.48,0);arm.rotation.z=side*-0.08;group.add(arm);
+ }
+ if(student){
+  const tieMesh=new THREE.Mesh(new THREE.BoxGeometry(0.10,0.46,0.035),tie);tieMesh.position.set(0,1.47,-0.225);group.add(tieMesh);
+ }else{
+  for(let y=1.35;y<1.75;y+=0.17){const b=new THREE.Mesh(new THREE.SphereGeometry(0.025,6,6),button);b.position.set(0,y,-0.218);group.add(b)}
+ }
+ group.userData={kind};return group;
 }
-function tick(){if(!won&&!lost){let dx=0,dy=0;if(keys.ArrowUp||keys.w)dy--;if(keys.ArrowDown||keys.s)dy++;if(keys.ArrowLeft||keys.a)dx--;if(keys.ArrowRight||keys.d)dx++;if(dx&&dy){dx*=.707;dy*=.707}move(player,dx*player.speed,dy*player.speed);
-teacher.t+=.025;teacher.x=720+Math.sin(teacher.t)*105;teacher.y=105+Math.sin(teacher.t*.65)*28;teacher.dir=Math.cos(teacher.t)>=0?1:-1;
-notes.forEach(n=>{if(!n.got&&Math.hypot(player.x-n.x,player.y-n.y)<23){n.got=true;toast='Music note collected!';updateHud()}});
-if(player.y>205)area='COURTYARD';if(player.x>800&&player.y>240&&player.y<370)area='MAIN GATE';else if(player.y<190)area='SCHOOL BUILDING';
-if(Math.hypot(player.x-teacher.x,player.y-teacher.y)<26){lost=true;toast='Music Sir spotted you. Restart and try again.'}
-if(player.x>840&&player.y>260&&player.y<355){if(notes.every(n=>n.got)){won=true;toast='You escaped the school!'}else toast='The gate is locked! Collect all 3 music notes first.'}
-updateHud()}draw();requestAnimationFrame(tick)}
-window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true});
-window.addEventListener('keyup',e=>keys[e.key]=false);
-document.querySelectorAll('[data-key]').forEach(b=>{const k=b.dataset.key;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true});['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>keys[k]=false))});
-document.getElementById('restart').onclick=reset;document.getElementById('sound').onclick=()=>{sound=!sound;document.getElementById('sound').textContent='♪ Sound: '+(sound?'on':'off');toast=sound?'Sound setting enabled (ambient audio not included yet).':'Sound off.';updateHud()};
-reset();tick();
-})();
+const sirShirtMat=mat('sirArm',0x111318);
+function labelSprite(text,color='#ffffff'){
+ const c=document.createElement('canvas');c.width=256;c.height=64;const g=c.getContext('2d');g.font='bold 30px system-ui';g.textAlign='center';g.fillStyle='rgba(5,12,18,.72)';g.fillRect(8,8,240,48);g.fillStyle=color;g.fillText(text,128,42);
+ const tex=new THREE.CanvasTexture(c);const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));sprite.scale.set(2.2,.55,1);return sprite;
+}
+function tree(x,z){
+ const g=new THREE.Group();cylinder(g,0,0,0,.22,.32,1.5,mat('bark',0x765239),6);
+ const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(1.05,0),mat('leaf',0x3c7650));crown.position.y=1.85;g.add(crown);g.position.set(x,0,z);scene.add(g);
+}
+function desk(x,z){
+ block(scene,x,.55,z,1.6,.12,.85,mat('deskTop',0x9a7650));
+ for(const dx of [-.65,.65])for(const dz of [-.3,.3])block(scene,x+dx,.25,z+dz,.09,.5,.09,mat('deskLeg',0x59636a));
+}
+function buildCampus(){
+ scene.background=new THREE.Color(0x9bb9c7);scene.fog=new THREE.Fog(0x9bb9c7,48,125);
+ scene.add(new THREE.HemisphereLight(0xeaf6ff,0x64785c,2.0));
+ const sun=new THREE.DirectionalLight(0xfff1d7,2.1);sun.position.set(-25,45,25);scene.add(sun);
+ // Campus base, school interior and outdoor zones
+ block(scene,0,-.25,0,110,.5,92,mat('campusGround',0x738a68));
+ block(scene,0,.01,-24,92,.08,31,mat('insideFloor',0xb5b3a5));
+ block(scene,0,.05,1,92,.1,19,mat('courtyard',0x8b9b84));
+ block(scene,0,.04,25,92,.08,29,mat('sports',0x557b61));
+ // School outer walls with a broad opening toward courtyard
+ block(scene,0,2.3,-39,92,4.6,.8,mat('schoolWall',0xd4d2c8),true);
+ block(scene,-46,2.3,-23,.8,4.6,32,mat('schoolWall',0xd4d2c8),true);
+ block(scene,46,2.3,-23,.8,4.6,32,mat('schoolWall',0xd4d2c8),true);
+ block(scene,-28,2.3,-8,36,4.6,.7,mat('schoolWall',0xd4d2c8),true);
+ block(scene,28,2.3,-8,36,4.6,.7,mat('schoolWall',0xd4d2c8),true);
+ // classroom dividers and doorway gaps
+ for(const x of [-15,8,28]){block(scene,x,1.5,-25,.35,3,19,mat('partition',0xc8c8bd),true)}
+ block(scene,-34,1.5,-17,19,3,.35,mat('partition',0xc8c8bd),true);
+ block(scene,18,1.5,-17,15,3,.35,mat('partition',0xc8c8bd),true);
+ // windows and doors on outer walls
+ for(const x of [-38,-30,-22,-5,3,16,24,36]){
+  block(scene,x,2.65,-39.42,3.5,1.15,.05,mat('glass',0x5d8790));
+ }
+ // desks, piano and reception
+ for(const x of [-38,-31,-24])for(const z of [-31,-25])desk(x,z);
+ block(scene,-37,.65,-12,4,1.3,1.2,mat('piano',0x202b35));
+ block(scene,36,.6,-13,6,1.2,2,mat('reception',0x8b6c50));
+ // corridors, benches, sports court lines
+ for(const x of [-30,-10,10,30])block(scene,x,.42,3,5,.8,.7,mat('bench',0x806347));
+ const lineMat=mat('fieldLine',0xd8e7d4);
+ block(scene,0,.11,25,.12,.02,28,lineMat);block(scene,0,.11,25,82,.02,.12,lineMat);
+ const circle=new THREE.Mesh(new THREE.TorusGeometry(7,.09,4,32),lineMat);circle.rotation.x=Math.PI/2;circle.position.set(0,.14,25);scene.add(circle);
+ // garden beds, trees and boundary fence
+ for(const x of [-38,-27,27,38]){block(scene,x,.15,13,5,.3,4,mat('flowerBed',0x526e48));tree(x,13)}
+ for(const x of [-42,-30,-18,18,30,42])tree(x,36);
+ block(scene,0,1.3,46,110,2.6,.5,mat('fence',0x667b80),true);
+ block(scene,-54,1.3,0,.5,2.6,92,mat('fence',0x667b80),true);
+ block(scene,54,1.3,-21,.5,2.6,50,mat('fence',0x667b80),true);
+ // main gate posts and sign, leave the central opening at the east edge
+ block(scene,53,2, -7,1,4,1,mat('gatePost',0xe0d9c8));
+ block(scene,53,2,7,1,4,1,mat('gatePost',0xe0d9c8));
+ block(scene,53,4,0,1,0.35,14,mat('gateTop',0x273e49));
+ const sign=labelSprite('MAIN GATE','#ffd166');sign.position.set(50,4.8,0);scene.add(sign);
+ // room signs
+ for(const [x,t] of [[-34,'MUSIC ROOM'],[-3,'CLASSROOM'],[18,'RECEPTION']]){
+  const s=labelSprite(t,'#ffffff');s.position.set(x,3.8,-10.5);s.scale.set(2.6,.55,1);scene.add(s);
+ }
+}
+function makeNote(x,z){
+ const g=new THREE.Group();const ring=new THREE.Mesh(new THREE.TorusGeometry(.42,.12,8,18),mat('noteGold',0xffd45e));ring.rotation.x=Math.PI/2;g.add(ring);
+ const stem=block(g,.28,.35,0,.12,.8,.12,mat('noteGold',0xffd45e));stem.rotation.z=-.15;
+ g.position.set(x,1.3,z);scene.add(g);return {group:g,x,z,got:false};
+}
+function reset(){
+ if(player)scene.remove(player);if(teacher)scene.remove(teacher);
+ player=makePerson('student');player.position.set(-39,0,-29);scene.add(player);
+ teacher=makePerson('sir');teacher.scale.setScalar(1.22);teacher.position.set(20,0,-25);scene.add(teacher);
+ notes.forEach(n=>scene.remove(n.group));
+ notes=[makeNote(-4,-25),makeNote(-24,4),makeNote(23,27)];
+ won=false;lost=false;teacherTime=0;toast='Find the 3 glowing music notes.';updateHud();
+}
+function updateHud(){
+ notesEl.textContent=notes.filter(n=>n.got).length+' / 3';
+ areaEl.textContent=player.position.z<-8?'SCHOOL BUILDING':player.position.z<17?'COURTYARD':player.position.z<42?'SPORTS GROUND / GARDEN':'MAIN GATE';
+ statusEl.textContent=won?'ESCAPED!':lost?'CAUGHT':'Find the exit';messageEl.textContent=toast;
+}
+function collides(x,z,r=.55){
+ return colliders.some(c=>x+r>c.x1&&x-r<c.x2&&z+r>c.z1&&z-r<c.z2);
+}
+function movePlayer(dt){
+ let x=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
+ let z=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+ const len=Math.hypot(x,z);if(!len)return;
+ x/=len;z/=len;const speed=8.2*dt;
+ const nx=THREE.MathUtils.clamp(player.position.x+x*speed,-50,50);
+ const nz=THREE.MathUtils.clamp(player.position.z+z*speed,-42,43);
+ if(!collides(nx,player.position.z))player.position.x=nx;
+ if(!collides(player.position.x,nz))player.position.z=nz;
+ player.rotation.y=Math.atan2(x,z);
+}
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.04);
+ if(!won&&!lost){
+  movePlayer(dt);
+  teacherTime+=dt;
+  teacher.position.x=20+Math.sin(teacherTime*.62)*12;
+  teacher.position.z=-24+Math.sin(teacherTime*.38)*2;
+  teacher.rotation.y=Math.cos(teacherTime*.62)>0?Math.PI/2:-Math.PI/2;
+  notes.forEach(n=>{if(!n.got){n.group.rotation.y+=dt*1.8;n.group.position.y=1.3+Math.sin(performance.now()*.002+n.x)*.12;if(Math.hypot(player.position.x-n.x,player.position.z-n.z)<1.8){n.got=true;n.group.visible=false;toast='Music note collected!';updateHud()}}});
+  if(Math.hypot(player.position.x-teacher.position.x,player.position.z-teacher.position.z)<1.65){lost=true;toast='Music Sir caught you. Restart and try another route.';updateHud()}
+  if(player.position.x>48&&Math.abs(player.position.z)<4){
+   if(notes.every(n=>n.got)){won=true;toast='You made it out of the school!';}
+   else toast='Gate locked — collect all 3 notes first.';
+   updateHud();
+  }
+ }
+ // Third-person follow camera
+ const desired=new THREE.Vector3(player.position.x,player.position.y+7.5,player.position.z+11.5);
+ camera.position.lerp(desired,1-Math.pow(.001,dt));camera.lookAt(player.position.x,1.25,player.position.z-1.8);
+ renderer.render(scene,camera);
+}
+function resize(){
+ const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
+}
+function start(){
+ scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(62,1,.1,180);
+ renderer=new THREE.WebGLRenderer({canvas,antialias:false,powerPreference:'low-power'});
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.35));renderer.outputColorSpace=THREE.SRGBColorSpace;
+ clock=new THREE.Clock();buildCampus();reset();resize();window.addEventListener('resize',resize);
+ loading.style.display='none';animate();
+}
+window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();keys[k]=true});
+window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+window.addEventListener('blur',()=>Object.keys(keys).forEach(k=>keys[k]=false));
+document.querySelectorAll('[data-key]').forEach(b=>{
+ const k=b.dataset.key;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true;b.setPointerCapture(e.pointerId)});
+ ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[k]=false));
+});
+document.getElementById('restart').onclick=()=>reset();
+document.getElementById('quality').onclick=()=>{
+ quality=quality==='low'?'very low':'low';
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,quality==='low'?1.35:1));
+ document.getElementById('quality').textContent='Quality: '+(quality==='low'?'Low':'Very low');
+};
+start().catch(err=>{console.error(err);loading.textContent='3D engine could not load. Check your internet connection and reload the page.'});
 </script>
 </body>
 </html>
