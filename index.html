@@ -79,13 +79,35 @@ ctx.fillStyle='#d1bda0';ctx.fillRect(45,75,150,65);ctx.fillRect(365,75,130,65);c
 ctx.fillStyle='#52636c';ctx.fillRect(55,84,130,48);ctx.fillRect(375,84,110,48);ctx.fillRect(710,84,105,48);
 ctx.fillStyle='#dbe7e9';ctx.font='12px system-ui';ctx.fillText('Piano',95,112);ctx.fillText('Desks',410,112);ctx.fillText('Office',740,112);
 }
+function drawPerson(x,y,style){
+const s=style.scale||1;
+ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+// Trousers, shoes, shirt and arms
+ctx.fillStyle=style.pants;ctx.fillRect(-9,5,7,13);ctx.fillRect(2,5,7,13);
+ctx.fillStyle='#17191d';ctx.fillRect(-10,16,8,4);ctx.fillRect(2,16,8,4);
+ctx.fillStyle=style.shirt;ctx.beginPath();ctx.roundRect(-12,-7,24,17,5);ctx.fill();
+ctx.fillStyle=style.skin;ctx.fillRect(-15,-5,4,13);ctx.fillRect(11,-5,4,13);
+ctx.fillRect(-3,-11,6,5);ctx.beginPath();ctx.arc(0,-16,8,0,Math.PI*2);ctx.fill();
+// Hair and simple facial features
+ctx.fillStyle='#171514';ctx.beginPath();ctx.arc(0,-19,7,Math.PI,Math.PI*2);ctx.fill();
+ctx.fillRect(-7,-19,3,5);ctx.fillRect(4,-19,3,5);
+ctx.fillStyle='#211713';ctx.fillRect(-3,-16,2,1.5);ctx.fillRect(2,-16,2,1.5);
+ctx.strokeStyle='#281915';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-2,-12);ctx.lineTo(2,-12);ctx.stroke();
+// Uniform tie or shirt buttons
+if(style.tie){ctx.fillStyle='#263d68';ctx.beginPath();ctx.moveTo(-2,-6);ctx.lineTo(2,-6);ctx.lineTo(3,3);ctx.lineTo(0,6);ctx.lineTo(-3,3);ctx.closePath();ctx.fill()}
+if(style.buttons){ctx.fillStyle='#c7cbd0';for(let by=-3;by<=5;by+=4){ctx.beginPath();ctx.arc(0,by,0.8,0,Math.PI*2);ctx.fill()}}
+ctx.restore();
+}
 function draw(){ctx.clearRect(0,0,W,H);drawBuilding();
 walls.forEach((b,i)=>{ctx.fillStyle=i<4?'#101b20':'#8b9991';ctx.fillRect(b.x,b.y,b.w,b.h);ctx.strokeStyle='#c5d1c7';ctx.globalAlpha=.2;ctx.strokeRect(b.x,b.y,b.w,b.h);ctx.globalAlpha=1});
 notes.forEach(n=>{if(n.got)return;ctx.save();ctx.shadowColor='#ffe36e';ctx.shadowBlur=18;ctx.fillStyle='#ffe36e';ctx.beginPath();ctx.arc(n.x,n.y,9,0,Math.PI*2);ctx.fill();ctx.restore();ctx.fillStyle='#392b08';ctx.font='bold 12px system-ui';ctx.fillText('♪',n.x-4,n.y+4)});
 ctx.save();ctx.fillStyle='rgba(255,85,85,.09)';ctx.beginPath();ctx.moveTo(teacher.x,teacher.y);ctx.arc(teacher.x,teacher.y,145,teacher.dir>0?-.85:Math.PI-.85,teacher.dir>0?.85:Math.PI+.85);ctx.closePath();ctx.fill();ctx.restore();
-ctx.fillStyle='#d65b58';ctx.beginPath();ctx.arc(teacher.x,teacher.y,teacher.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(teacher.x-5,teacher.y-3,2,0,7);ctx.arc(teacher.x+5,teacher.y-3,2,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 11px system-ui';ctx.fillText('MUSIC SIR',teacher.x-31,teacher.y-23);
-ctx.fillStyle='#52e5d3';ctx.beginPath();ctx.arc(player.x,player.y,player.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#092c2a';ctx.beginPath();ctx.arc(player.x-4,player.y-2,2,0,7);ctx.arc(player.x+4,player.y-2,2,0,7);ctx.fill();
-ctx.fillStyle='#e9f3f0';ctx.font='bold 10px system-ui';ctx.fillText('YOU',player.x-10,player.y+25);
+// Music Sir: larger-built adult with a dark complexion, black button-up shirt and dark trousers.
+drawPerson(teacher.x,teacher.y,{skin:'#3b241d',shirt:'#111318',pants:'#20242b',scale:1.28,buttons:true});
+ctx.fillStyle='#fff';ctx.font='bold 11px system-ui';ctx.fillText('MUSIC SIR',teacher.x-31,teacher.y-27);
+// Player: student in a neat LGS-inspired uniform (white shirt, navy trousers and tie).
+drawPerson(player.x,player.y,{skin:'#b87952',shirt:'#f2f4f2',pants:'#172d50',scale:1,tie:true});
+ctx.fillStyle='#e9f3f0';ctx.font='bold 10px system-ui';ctx.fillText('YOU',player.x-10,player.y+27);
 if(won||lost){ctx.fillStyle='#061018d9';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle=won?'#65ead8':'#ff8888';ctx.font='bold 42px system-ui';ctx.fillText(won?'YOU ESCAPED!':'MUSIC SIR CAUGHT YOU!',W/2,H/2-10);ctx.fillStyle='#fff';ctx.font='17px system-ui';ctx.fillText(won?'The school gate is open. Nice work!':'Try another route and use the walls for cover.',W/2,H/2+28);ctx.textAlign='left'}
 }
 function tick(){if(!won&&!lost){let dx=0,dy=0;if(keys.ArrowUp||keys.w)dy--;if(keys.ArrowDown||keys.s)dy++;if(keys.ArrowLeft||keys.a)dx--;if(keys.ArrowRight||keys.d)dx++;if(dx&&dy){dx*=.707;dy*=.707}move(player,dx*player.speed,dy*player.speed);
