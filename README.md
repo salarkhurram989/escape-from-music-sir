@@ -10,9 +10,10 @@ If the website does not open yet, enable GitHub Pages in the repository settings
 You can also open `index.html` directly in a browser.
 
 ## Current gameplay
-- Explore a low-poly 3D school building and outdoor campus from a third-person camera.
-- Collect three music notes.
-- Avoid Music Sir's patrol.
+- Explore a more detailed low-poly 3D school building and outdoor campus from a third-person camera, with shadows, roof details, walkways, campus lights and landscaped areas.
+- Use the live campus minimap to track your position, Music Sir and all remaining notes.
+- Collect five music notes before the 100-second timer expires.
+- Survive IMPOSSIBLE mode: Music Sir actively chases you when he gets close and catches you on contact.
 - Reach the main gate to complete the escape.
 - Keyboard controls: WASD or arrow keys.
 - Touch controls are available on smaller screens.
