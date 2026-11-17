@@ -41,7 +41,7 @@ footer{text-align:center;color:#7f93a3;font-size:10px;padding:10px}
 <p>The final music period is over. Explore the school, collect the missing notes and get to the main gate without being caught.</p>
 <div class="objective"><strong>IMPOSSIBLE MODE</strong><p style="margin:5px 0 0">Find all 5 notes before time runs out. Music Sir hears movement from far away and sprints after you. One touch ends the run.</p></div><h2>LIVE CAMPUS MAP</h2><div class="mapbox"><canvas id="minimap" width="260" height="220" aria-label="Live school minimap"></canvas><div class="maplegend"><span>● You</span><span>● Music Sir</span><span>● Notes</span><span>□ Exit</span></div></div>
 <h2>CONTROLS</h2>
-<ul><li><b>W A S D</b> or <b>Arrow keys</b> — move</li><li><b>Right-click + drag</b> — rotate the camera (Roblox-style)</li><li><b>Mouse wheel</b> — zoom in and out</li><li><b>Touch and drag</b> on the game — look around on phones/tablets</li><li>Use the on-screen pad to move on phones/tablets</li><li>Keep your distance from Music Sir</li></ul>
+<ul><li><b>Move mouse inside the game</b> — steer the student; move cursor away from centre to walk that way</li><li><b>W A S D</b> or <b>Arrow keys</b> — move</li><li><b>Right-click + drag</b> — rotate the camera (Roblox-style)</li><li><b>Mouse wheel</b> — zoom in and out</li><li><b>Touch and drag</b> on the game — look around on phones/tablets</li><li>Use the on-screen pad to move on phones/tablets</li><li>Keep your distance from Music Sir</li></ul>
 <h2>3D CAMPUS</h2>
 <p><b>Inside:</b> Music room, classrooms, desks and corridors.</p>
 <p><b>Outside:</b> Courtyard, sports ground, garden, trees and main gate.</p>
@@ -57,7 +57,7 @@ const loading=document.getElementById('loading');
 const areaEl=document.getElementById('area'),notesEl=document.getElementById('notes'),statusEl=document.getElementById('status'),messageEl=document.getElementById('message'),timerEl=document.getElementById('timer');
 const keys=Object.create(null);
 let scene,camera,renderer,clock,player,teacher,notes=[],won=false,lost=false,quality='low',toast='Find all 5 notes. IMPOSSIBLE mode is active.',teacherTime=0,timeLeft=100;
-let cameraYaw=0,cameraPitch=.18,cameraDistance=8.5,draggingCamera=false,lastPointerX=0,lastPointerY=0;
+let cameraYaw=0,cameraPitch=.18,cameraDistance=8.5,draggingCamera=false,lastPointerX=0,lastPointerY=0,mouseMoveX=0,mouseMoveY=0;
 const colliders=[];
 const mats={};
 const mat=(name,color,roughness=1)=>mats[name]||(mats[name]=new THREE.MeshStandardMaterial({color,roughness}));
@@ -199,10 +199,15 @@ function collides(x,z,r=.55){
  return colliders.some(c=>x+r>c.x1&&x-r<c.x2&&z+r>c.z1&&z-r<c.z2);
 }
 function movePlayer(dt){
- let x=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
- let z=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
- const len=Math.hypot(x,z);if(!len)return;
- x/=len;z/=len;const speed=7.4*dt;
+ // Mouse position steers relative to the camera: cursor away from centre = walk that way.
+ const keyX=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
+ const keyZ=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+ const forwardX=Math.sin(cameraYaw),forwardZ=-Math.cos(cameraYaw);
+ const rightX=Math.cos(cameraYaw),rightZ=Math.sin(cameraYaw);
+ let x=keyX+rightX*mouseMoveX-forwardX*mouseMoveY;
+ let z=keyZ+rightZ*mouseMoveX-forwardZ*mouseMoveY;
+ const len=Math.hypot(x,z);if(len<.08)return;
+ x/=Math.max(1,len);z/=Math.max(1,len);const speed=7.4*dt;
  const nx=THREE.MathUtils.clamp(player.position.x+x*speed,-50,50);
  const nz=THREE.MathUtils.clamp(player.position.z+z*speed,-42,43);
  if(!collides(nx,player.position.z))player.position.x=nx;
@@ -256,6 +261,16 @@ function start(){
 }
 // Right mouse drag rotates the camera; touch drag provides the same control on mobile.
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
+// Mouse steering: cursor position relative to the game view's centre controls walking direction.
+canvas.addEventListener('pointermove',e=>{
+ if(e.pointerType!=='mouse'||draggingCamera)return;
+ const r=canvas.getBoundingClientRect();
+ mouseMoveX=THREE.MathUtils.clamp((e.clientX-(r.left+r.width/2))/(r.width*.38),-1,1);
+ mouseMoveY=THREE.MathUtils.clamp((e.clientY-(r.top+r.height/2))/(r.height*.38),-1,1);
+});
+canvas.addEventListener('pointerleave',e=>{
+ if(e.pointerType==='mouse'){mouseMoveX=0;mouseMoveY=0;}
+});
 canvas.addEventListener('pointerdown',e=>{
  if(e.pointerType==='touch'||e.button===2){
   draggingCamera=true;lastPointerX=e.clientX;lastPointerY=e.clientY;
