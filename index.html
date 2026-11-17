@@ -41,7 +41,7 @@ footer{text-align:center;color:#7f93a3;font-size:10px;padding:10px}
 <p>The final music period is over. Explore the school, collect the missing notes and get to the main gate without being caught.</p>
 <div class="objective"><strong>IMPOSSIBLE MODE</strong><p style="margin:5px 0 0">Find all 5 notes before time runs out. Music Sir hears movement from far away and sprints after you. One touch ends the run.</p></div><h2>LIVE CAMPUS MAP</h2><div class="mapbox"><canvas id="minimap" width="260" height="220" aria-label="Live school minimap"></canvas><div class="maplegend"><span>● You</span><span>● Music Sir</span><span>● Notes</span><span>□ Exit</span></div></div>
 <h2>CONTROLS</h2>
-<ul><li><b>W A S D</b> or <b>Arrow keys</b> — move</li><li>Move your mouse nowhere; the camera follows automatically</li><li>Use the on-screen pad on phones/tablets</li><li>Keep your distance from Music Sir</li></ul>
+<ul><li><b>W A S D</b> or <b>Arrow keys</b> — move</li><li><b>Right-click + drag</b> — rotate the camera (Roblox-style)</li><li><b>Mouse wheel</b> — zoom in and out</li><li><b>Touch and drag</b> on the game — look around on phones/tablets</li><li>Use the on-screen pad to move on phones/tablets</li><li>Keep your distance from Music Sir</li></ul>
 <h2>3D CAMPUS</h2>
 <p><b>Inside:</b> Music room, classrooms, desks and corridors.</p>
 <p><b>Outside:</b> Courtyard, sports ground, garden, trees and main gate.</p>
@@ -57,6 +57,7 @@ const loading=document.getElementById('loading');
 const areaEl=document.getElementById('area'),notesEl=document.getElementById('notes'),statusEl=document.getElementById('status'),messageEl=document.getElementById('message'),timerEl=document.getElementById('timer');
 const keys=Object.create(null);
 let scene,camera,renderer,clock,player,teacher,notes=[],won=false,lost=false,quality='low',toast='Find all 5 notes. IMPOSSIBLE mode is active.',teacherTime=0,timeLeft=100;
+let cameraYaw=0,cameraPitch=.38,cameraDistance=11.5,draggingCamera=false,lastPointerX=0,lastPointerY=0;
 const colliders=[];
 const mats={};
 const mat=(name,color,roughness=1)=>mats[name]||(mats[name]=new THREE.MeshStandardMaterial({color,roughness}));
@@ -228,9 +229,15 @@ function animate(){
   }
  }
  drawMinimap();
- // Third-person follow camera
- const desired=new THREE.Vector3(player.position.x,player.position.y+7.5,player.position.z+11.5);
- camera.position.lerp(desired,1-Math.pow(.001,dt));camera.lookAt(player.position.x,1.25,player.position.z-1.8);
+ // Roblox-style orbit camera: mouse/touch controls the view while it follows the player.
+ const horizontal=Math.cos(cameraPitch)*cameraDistance;
+ const desired=new THREE.Vector3(
+  player.position.x+Math.sin(cameraYaw)*horizontal,
+  player.position.y+1.25+Math.sin(cameraPitch)*cameraDistance,
+  player.position.z+Math.cos(cameraYaw)*horizontal
+ );
+ camera.position.lerp(desired,1-Math.pow(.001,dt));
+ camera.lookAt(player.position.x,1.25,player.position.z);
  renderer.render(scene,camera);
 }
 function resize(){
@@ -243,6 +250,27 @@ function start(){
  clock=new THREE.Clock();buildCampus();reset();resize();window.addEventListener('resize',resize);
  loading.style.display='none';animate();
 }
+// Right mouse drag rotates the camera; touch drag provides the same control on mobile.
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+canvas.addEventListener('pointerdown',e=>{
+ if(e.pointerType==='touch'||e.button===2){
+  draggingCamera=true;lastPointerX=e.clientX;lastPointerY=e.clientY;
+  canvas.setPointerCapture(e.pointerId);e.preventDefault();
+ }
+});
+canvas.addEventListener('pointermove',e=>{
+ if(!draggingCamera)return;
+ const dx=e.clientX-lastPointerX,dy=e.clientY-lastPointerY;
+ lastPointerX=e.clientX;lastPointerY=e.clientY;
+ cameraYaw-=dx*.006;cameraPitch=THREE.MathUtils.clamp(cameraPitch+dy*.004,.12,1.05);
+});
+function stopCameraDrag(){draggingCamera=false}
+canvas.addEventListener('pointerup',stopCameraDrag);
+canvas.addEventListener('pointercancel',stopCameraDrag);
+canvas.addEventListener('lostpointercapture',stopCameraDrag);
+canvas.addEventListener('wheel',e=>{
+ e.preventDefault();cameraDistance=THREE.MathUtils.clamp(cameraDistance+Math.sign(e.deltaY)*.9,5.5,19);
+},{passive:false});
 window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();keys[k]=true});
 window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 window.addEventListener('blur',()=>Object.keys(keys).forEach(k=>keys[k]=false));
