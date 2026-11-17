@@ -2,8 +2,12 @@
 
 A browser-based school stealth adventure set around an LGS State Life Senior Branch-inspired campus in Lake City Meadows, Lahore.
 
-## Play
-Open index.html in a browser, or enable GitHub Pages for the repository using the main branch and root folder.
+## Website
+[Play Escape from Music Sir](https://salarkhurram989.github.io/escape-from-music-sir/)
+
+If the website does not open yet, enable GitHub Pages in the repository settings: **Settings → Pages → Deploy from a branch → main → /(root)**. It may take a few minutes to publish.
+
+You can also open `index.html` directly in a browser.
 
 ## Current gameplay
 - Explore the school building and outdoor campus.
